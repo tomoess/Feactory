@@ -72,7 +72,11 @@ for feature_tab in train_feature_tabs:
     data_all = pd.merge(data_all,feature_tab,on='uid',how='left')  
 data_all = data_all.fillna(0)
 
-
+#%% processing features
+#连续值属性
+featureConCols = ['active_time']
+#离散值属性
+featureCatCols = []
 #%% data split and train
 X = data_all.drop(['loan_sum','uid'],axis = 1)
 Y = data_all['loan_sum']
@@ -97,4 +101,4 @@ import time
 
 time_str=time.strftime('%Y-%m-%d-%H-%M-%S',time.localtime(time.time()))[5:]
 savedData=pd.DataFrame({'id':test_data['uid'],'prob':pred_test})
-test_data.to_csv('submit.csv',index = False,header=False)    
+test_data.to_csv(time_str+'submit.csv',index = False,header=False)    
