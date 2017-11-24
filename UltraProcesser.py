@@ -167,21 +167,37 @@ def restrictrule(proptobechecked):
 def restrictfunc(csvfile, restrictprop_name, restrictrule=restrictrule):
     csvfile['new_'+str(restrictprop_name)] = pd.to_datetime(csvfile[restrictprop_name])
     csvfile = csvfile.set_index('new_'+str(restrictprop_name))
-    data_start_date_str = '2016-8'
-    data_end_date_str = '2016-10'
+    data_start_date_str = '2016-8-3'
+    data_end_date_str = '2016-8-4'
     return csvfile[data_start_date_str:data_end_date_str]
 
 
 class configs(object):
-    def __init__(self):
-        self.data_dir = '../data/'
-        self.feature_dir = '../features/'
-        self.filename = 't_loan.csv'
+    def __init__(self, data_dir = '../data/',
+                 feature_dir = '../features/',
+                 filename = None,
+                 func_num = None,
+                 input_uid_name = 'uid',
+                 input_prop_name = None,
+                 input_restrict_prop_name = None,
+                 output2file = False,
+                 restrictfunc = None,
+                 ):
+        self.data_dir = data_dir
+        self.feature_dir = feature_dir
+        self.filename = filename
+        self.func_num = func_num
+        self.uid = input_uid_name
+        self.propname = input_prop_name
+        self.restrictpropname = input_restrict_prop_name
+        self.output2file = output2file
+        self.restrictfunc = restrictfunc
+
     def __repr__(self):
         print('data_dir: '+str(self.data_dir))
         print('feature_dir: ' + str(self.feature_dir))
 
-def UltraProcesser(configs, input_uid_name, input_prop_name, func_num, output2file=False, restrictfunc=None, input_restrictprop_name=None):
+def UltraProcesser(configs):
     func_list = {
         '0': sub_func_uidfrec,
         '1': sub_func_simplesumprop,
@@ -192,9 +208,13 @@ def UltraProcesser(configs, input_uid_name, input_prop_name, func_num, output2fi
         '6': sub_func_getgroupnumfromfitcurve,
         '7': sub_func_getpropfrecdict
     }
+    input_uid_name = configs.uid
+    input_prop_name = configs.propname
+    restrictfunc = configs.restrictfunc
+    input_restrict_prop_name = configs.restrictpropname
     csvfile = pd.read_csv(configs.data_dir + configs.filename)
-    if input_restrictprop_name != None and restrictfunc != None:
-        csvfile = restrictfunc(csvfile,input_restrictprop_name)
+    if input_restrict_prop_name != None and restrictfunc != None:
+        csvfile = restrictfunc(csvfile,input_restrict_prop_name)
     uid_list = csvfile[input_uid_name].tolist()
     prop_list = csvfile[input_prop_name].tolist()
     len_uid_list = len(uid_list)
@@ -204,8 +224,9 @@ def UltraProcesser(configs, input_uid_name, input_prop_name, func_num, output2fi
         return
     else:
         totallen = len_uid_list
+        func_num = configs.func_num
         rtndict = func_list[func_num](uid_list, prop_list, totallen)
-        if output2file:
+        if configs.output2file:
             import csv
             with open(str(configs.feature_dir) + str(configs.filename).replace('.csv','_') +
                               str(input_uid_name) + '_' + str(input_prop_name) + '_func' +
@@ -225,15 +246,16 @@ def UltraProcesser(configs, input_uid_name, input_prop_name, func_num, output2fi
 
 def main():
     print("Working in %s"%__name__)
-    newconfig = configs()
+    newconfig = configs(filename='t_loan.csv',
+                        input_uid_name='uid',
+                        input_prop_name='plannum',
+                        func_num='2',
+                        output2file=True,
+                        restrictfunc=restrictfunc,
+                        input_restrict_prop_name='loan_time')
 
     #demo
-    UltraProcesser(newconfig, 'uid', 'plannum', '1', output2file=True, restrictfunc=restrictfunc, input_restrictprop_name='loan_time')
-#     UltraProcesser(newconfig, 'uid', 'plannum', '2', output2file=True)
-#     UltraProcesser(newconfig, 'uid', 'plannum', '3', output2file=True)
-#     UltraProcesser(newconfig, 'uid', 'plannum', '4', output2file=True)
-#     UltraProcesser(newconfig, 'uid', 'plannum', '5', output2file=True)
-#     UltraProcesser(newconfig, 'uid', 'plannum', '7', output2file=True)
+    UltraProcesser(newconfig)
 
 if __name__ == '__main__':
     main()
