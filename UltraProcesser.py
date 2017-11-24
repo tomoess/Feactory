@@ -228,12 +228,12 @@ def main():
     newconfig = configs()
 
     #demo
-    UltraProcesser(newconfig, 'uid', 'plannum', '1', output2file=True)
-    UltraProcesser(newconfig, 'uid', 'plannum', '2', output2file=True)
-    UltraProcesser(newconfig, 'uid', 'plannum', '3', output2file=True)
-    UltraProcesser(newconfig, 'uid', 'plannum', '4', output2file=True)
-    UltraProcesser(newconfig, 'uid', 'plannum', '5', output2file=True)
-    UltraProcesser(newconfig, 'uid', 'plannum', '7', output2file=True)
+    UltraProcesser(newconfig, 'uid', 'plannum', '1', output2file=True, restrictfunc=restrictfunc, input_restrictprop_name='loan_time')
+#     UltraProcesser(newconfig, 'uid', 'plannum', '2', output2file=True)
+#     UltraProcesser(newconfig, 'uid', 'plannum', '3', output2file=True)
+#     UltraProcesser(newconfig, 'uid', 'plannum', '4', output2file=True)
+#     UltraProcesser(newconfig, 'uid', 'plannum', '5', output2file=True)
+#     UltraProcesser(newconfig, 'uid', 'plannum', '7', output2file=True)
 
 if __name__ == '__main__':
     main()
