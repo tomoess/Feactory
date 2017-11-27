@@ -1,7 +1,7 @@
 from tqdm import *
 import pandas as pd
 import numpy as np
-
+from pandas import Series,DataFrame
 
 
 # func:
@@ -33,9 +33,9 @@ import numpy as np
 # 在这之前，要对数据进行是否有空运算和是否符合运算规则检查
 # ------------------------------------------------------------------------------------
 # 0:输出每个uid出现的总次数
-def sub_func_uidfrec(uid_list, prop_list, totallen):
+def sub_func_uidfrec(uid_list, prop_list):
     itemfrecdict = dict()
-    for i in tqdm(range(totallen)):
+    for i in tqdm(range(len(uid_list))):
         cur_uid = uid_list[i]
         if itemfrecdict.get(cur_uid) == None:
             itemfrecdict[cur_uid] = 1
@@ -45,9 +45,9 @@ def sub_func_uidfrec(uid_list, prop_list, totallen):
 # ------------------------------------------------------------------------------------
 # 1:输出每个uid对应的多个prop的简单求和
 #   这里的 uid_list, prop_list 都是已经经过restrict函数筛选过的，totallen <= maxtotallen
-def sub_func_simplesumprop(uid_list, prop_list, totallen):
+def sub_func_simplesumprop(uid_list, prop_list):
     itemsumdict = dict()
-    for i in tqdm(range(totallen)):
+    for i in tqdm(range(len(uid_list))):
             cur_uid = uid_list[i]
             if itemsumdict.get(cur_uid) == None:
                 itemsumdict[cur_uid] = prop_list[i]
@@ -56,9 +56,9 @@ def sub_func_simplesumprop(uid_list, prop_list, totallen):
     return itemsumdict
 # ------------------------------------------------------------------------------------
 # 1.5 功能函数 get item prop frec dict
-def tool_func_getitempropfrecdict(uid_list, prop_list, totallen):
+def tool_func_getitempropfrecdict(uid_list, prop_list):
     itempropfrecdict = dict()
-    for i in tqdm(range(totallen)):
+    for i in tqdm(range(len(uid_list))):
         cur_uid = uid_list[i]
         if itempropfrecdict.get(cur_uid) == None:
             itempropfrecdict[cur_uid] = dict()
@@ -71,34 +71,62 @@ def tool_func_getitempropfrecdict(uid_list, prop_list, totallen):
     return itempropfrecdict
 # ------------------------------------------------------------------------------------
 # 2:输出每个uid对应的所有prop的种类数
-def sub_func_getproptype(uid_list, prop_list, totallen):
-    itempropfrecdict = tool_func_getitempropfrecdict(uid_list, prop_list, totallen)
+def sub_func_getproptype(uid_list, prop_list):
+    itempropfrecdict = tool_func_getitempropfrecdict(uid_list, prop_list)
     for onekey in itempropfrecdict:
         tmppropfrec = len(itempropfrecdict[onekey])
         itempropfrecdict[onekey] = tmppropfrec
     return itempropfrecdict
 # ------------------------------------------------------------------------------------
 # 3:输出每个uid对应的所有prop中，出现频率最高的那种prop值
-def sub_func_getmostfrecprop(uid_list, prop_list, totallen):
-    itempropfrecdict = tool_func_getitempropfrecdict(uid_list, prop_list, totallen)
+def sub_func_getmostfrecprop(uid_list, prop_list):
+    itempropfrecdict = tool_func_getitempropfrecdict(uid_list, prop_list)
     for onekey in itempropfrecdict:
         mostfrecproptime = sorted(itempropfrecdict[onekey], key=lambda x: itempropfrecdict[onekey][x])[-1]
         itempropfrecdict[onekey] = mostfrecproptime
     return itempropfrecdict
 # ------------------------------------------------------------------------------------
 # 4:输出每个uid对应的在所有prop中频度排名最高的prop值
-def sub_func_getrankheadpropdict(uid_list, prop_list, totallen):
-    itempropfrecdict = tool_func_getitempropfrecdict(uid_list, prop_list, totallen)
-    propfrecdict = sub_func_getpropfrecdict(uid_list, prop_list, totallen)
+def sub_func_getrankheadpropdict(uid_list, prop_list):
+    itempropfrecdict = tool_func_getitempropfrecdict(uid_list, prop_list)
+    propfrecdict = sub_func_getpropfrecdict(uid_list, prop_list)
     for onekey in itempropfrecdict:
         itempropfrecdict[onekey] = \
             tool_func_getheadpropbyrankdict(itempropfrecdict[onekey], propfrecdict)
     return itempropfrecdict
+# 4:输出每个uid对应的在所有prop中频度排名最高的prop值__pandas版
+#prop_priority_list是prop优先级,可自定义;
+#prop_priority = ‘freq’则以prop出现频率作为prop优先级
+def sub_func_getmostfrecprop_r(uid_list, prop_list, prop_priority ='freq', prop_priority_list = []):
+    assert len(uid_list) == len(prop_list),'length not match'
+    uid_prop_tab = pd.DataFrame({'uid':Series(uid_list),'prop':Series(prop_list),'cnt':Series(np.ones(len(uid_list)))})   
+    uid_prop_cnt = uid_prop_tab.groupby(by = ['uid','prop'],as_index = False).count()#aggregating uid-prop,1 uid vs n prop    
+    uid_prop_cnt_max = uid_prop_cnt.groupby(by = ['uid'],as_index = False).max()#aggregating for uid twice，get max freq of prop
+    uid_prop_cnt_max =  pd.merge(uid_prop_cnt_max[['cnt','uid']],uid_prop_cnt,how='left')   
+    uid_prop_cnt_max = pd.merge(uid_prop_cnt_max,uid_prop_cnt[['cnt','uid']],how='left').drop_duplicates()
+    if(prop_priority == 'freq'):
+        prop_priority_list  = uid_prop_tab.groupby(by = ['prop'],as_index = False).count()[['uid','prop']]
+    return duplicat_processor(uid_prop_cnt_max,prop_priority_list)
+# 4.1:功能函数,处理uid重复问题。prop_priority_list为prop优先级
+def duplicat_processor(uid_prop_tab,prop_priority_list = None):
+    #此处需检查prop_priority_list是否存在重复，尚未实现   
+    if(len(prop_priority_list)>0):
+        priority_name =  list(set(prop_priority_list.keys()) ^ set(['prop']))[0]
+        prop_priority_list.rename(columns={priority_name:'priority'}, inplace=True)
+        print(prop_priority_list['priority'].duplicated())
+        assert True  in prop_priority_list['priority'].duplicated(),'prop_priority_list has duplicates'
+        uid_prop_priority_list =  pd.merge(uid_prop_tab,prop_priority_list,how='left')
+        uid_prop_priority_max =  uid_prop_priority_list.groupby(by = ['uid'],as_index = False).max()[['uid','priority']]        
+        no_duplicates_tab = pd.merge(uid_prop_priority_max[['uid','priority']],prop_priority_list,how='left')
+
+    else:
+        no_duplicates_tab = uid_prop_tab.drop_duplicates(['uid'])
+    return no_duplicates_tab[['uid','prop']]
 # ------------------------------------------------------------------------------------
 # 5:输出每个uid对应的所有prop的平均值
-def sub_func_getavgpropdict(uid_list, prop_list, totallen):
-    itemproptypedict = sub_func_getproptype(uid_list, prop_list, totallen)
-    itempropsumdict = sub_func_simplesumprop(uid_list, prop_list, totallen)
+def sub_func_getavgpropdict(uid_list, prop_list):
+    itemproptypedict = sub_func_getproptype(uid_list, prop_list)
+    itempropsumdict = sub_func_simplesumprop(uid_list, prop_list)
     # print(len(itemproptypedict))
     # print(len(itempropsumdict))
     for onekey in itempropsumdict:
@@ -126,16 +154,16 @@ def polyfit(list):
     return list
 # ------------------------------------------------------------------------------------
 # 6:输出所有uid对应的prop按数值排序后拟合后处于的位置信息，>=拐点为1，<拐点为0，默认为polyfit，自由度为3
-def sub_func_getgroupnumfromfitcurve(uid_list, prop_list, totallen):
+def sub_func_getgroupnumfromfitcurve(uid_list, prop_list):
     fited_normalized_prop_list = polyfit(Z_ScoreNormalization(prop_list))
     #TODO
     fakedict = dict()
     return fakedict
 # ------------------------------------------------------------------------------------
 # 7:输出所有prop及其对应的频度
-def sub_func_getpropfrecdict(uid_list, prop_list, totallen):
+def sub_func_getpropfrecdict(uid_list, prop_list):
     propfrecdict = dict()
-    for i in tqdm(range(totallen)):
+    for i in tqdm(range(len(uid_list))):
         if propfrecdict.get(prop_list[i]) == None:
             propfrecdict[prop_list[i]] = 1
         else:
@@ -225,7 +253,7 @@ def UltraProcesser(configs):
     else:
         totallen = len_uid_list
         func_num = configs.func_num
-        rtndict = func_list[func_num](uid_list, prop_list, totallen)
+        rtndict = func_list[func_num](uid_list, prop_list)
         if configs.output2file:
             import csv
             with open(str(configs.feature_dir) + str(configs.filename).replace('.csv','_') +
@@ -256,10 +284,17 @@ def main():
 
     #demo
     UltraProcesser(newconfig)
-
+def test():  
+    click_data = pd.read_csv(data_dir+'t_click.csv')
+    #demo  
+    x1 = sub_func_getmostfrecprop_r(click_data['uid'],click_data['pid'])
+    x2 = sub_func_getmostfrecprop(click_data['uid'],click_data['pid'])
+    uid = [  1,    1,      2,   2,    2,      3,      4,     5,   5,      5    ,5]
+    prop = ['red','blue','red','red','blue','black','red','red','blue','red','red']
+    yyy = sub_func_getmostfrecprop_r(uid,prop,prop_priority = 'freq')
 if __name__ == '__main__':
     main()
-
+    
 
 
 
