@@ -57,3 +57,178 @@
 #     if output_type == 0, return 0 or 1 and write a csv file to disk
 #     elif output_type == 1, return a dict with contents
 #     elif output_type == 2, plot a graph
+
+# 20171128 NEW ADDED!!!
+
+# ============================================================================================
+# 统一输入:DATAFRAME_2C
+#     一个DataFrame，index为默认，一共两列，一列column名为实际uid（m*n），一列为实际prop(m*n)
+# 统一输出:RTN_PROPFRAME_2C
+#     一个DataFrame，index为默认，一共两列，一列column名为实际uid（m*1），一列为统计运算后feature（m*1）
+# ============================================================================================
+# ------------------------------------------------------------------------------------
+# 1:输出每个uid出现的总次数
+def sub_func_get_uid_frecframe(DATAFRAME_2C):
+    return RTN_PROPFRAME_2C
+# ------------------------------------------------------------------------------------
+# 2:输出每个uid对应的所有prop的种类数
+def sub_func_get_proptype_frame(DATAFRAME_2C):
+    return RTN_PROPFRAME_2C
+# ------------------------------------------------------------------------------------
+# 3:输出每个uid对应的多个prop的简单求和
+def sub_func_get_sum_propframe(DATAFRAME_2C):
+    return RTN_PROPFRAME_2C
+# ------------------------------------------------------------------------------------
+# 4:输出每个uid对应的所有prop的平均值
+def sub_func_get_avg_propframe(DATAFRAME_2C):
+    return RTN_PROPFRAME_2C
+# ------------------------------------------------------------------------------------
+# 5:输出每个uid对应的所有prop的中位数
+def sub_func_get_median_propframe(DATAFRAME_2C):
+    return RTN_PROPFRAME_2C
+# ------------------------------------------------------------------------------------
+# 6:输出每个uid对应的所有prop的众数
+def sub_func_get_mode_propframe(DATAFRAME_2C):
+    return RTN_PROPFRAME_2C
+# ------------------------------------------------------------------------------------
+# 7:输出每个uid对应的所有prop的上四分卫数
+def sub_func_get_upquantile_propframe(DATAFRAME_2C):
+    return RTN_PROPFRAME_2C
+# ------------------------------------------------------------------------------------
+# 8:输出每个uid对应的所有prop的下四分卫数
+def sub_func_get_bottomquantile_propframe(DATAFRAME_2C):
+    return RTN_PROPFRAME_2C
+# ------------------------------------------------------------------------------------
+# 9:输出每个uid对应的所有prop的累积乘积
+def sub_func_get_cumprod_propframe(DATAFRAME_2C):
+    return RTN_PROPFRAME_2C
+# ------------------------------------------------------------------------------------
+# 10:输出每个uid对应的所有prop在全局频度排序排名最高的prop值
+def sub_func_get_topfrec_propframe(DATAFRAME_2C):
+    return RTN_PROPFRAME_2C
+# ------------------------------------------------------------------------------------
+# 11:输出每个uid对应的所有prop中数值最小的
+def sub_func_get_minnum_propframe(DATAFRAME_2C):
+    return RTN_PROPFRAME_2C
+# ------------------------------------------------------------------------------------
+# 12:输出每个uid对应的所有prop中数值最大的
+def sub_func_get_maxnum_propframe(DATAFRAME_2C):
+    return RTN_PROPFRAME_2C
+# ------------------------------------------------------------------------------------
+# 13:输出每个uid对应的所有prop的极差
+def sub_func_get_numrange_propframe(DATAFRAME_2C):
+    return RTN_PROPFRAME_2C
+# ------------------------------------------------------------------------------------
+# 14:输出每个uid对应的所有prop的方差
+def sub_func_get_var_propframe(DATAFRAME_2C):
+    return RTN_PROPFRAME_2C
+# ------------------------------------------------------------------------------------
+# 15:输出每个uid对应的所有prop的标准差
+def sub_func_get_std_propframe(DATAFRAME_2C):
+    return RTN_PROPFRAME_2C
+# ------------------------------------------------------------------------------------
+# 16:输出每个uid对应的所有prop的四分卫差
+def sub_func_get_quantilerange_propframe(DATAFRAME_2C):
+    return RTN_PROPFRAME_2C
+# ------------------------------------------------------------------------------------
+# 17:输出每个uid对应的所有prop的离散系数(Coefficient of Variance) std/mean
+def sub_func_get_coefficient_propframe(DATAFRAME_2C):
+    return RTN_PROPFRAME_2C
+# ------------------------------------------------------------------------------------
+# 18:输出每个uid对应的所有prop的一阶差分
+def sub_func_get_diff_propframe(DATAFRAME_2C):
+    return RTN_PROPFRAME_2C
+# ------------------------------------------------------------------------------------
+# 19:输出每个uid对应的所有prop的百分比数变化
+def sub_func_get_pct_change_propframe(DATAFRAME_2C):
+    return RTN_PROPFRAME_2C
+# ------------------------------------------------------------------------------------
+# 20:输出每个uid对应的所有prop不排序的变化量的标准差
+def sub_func_get_diffstd_propframe(DATAFRAME_2C):
+    return RTN_PROPFRAME_2C
+# ------------------------------------------------------------------------------------
+# 21:输出每个uid对应的所有prop排序后的变化量的标准差
+def sub_func_get_sorteddiffstd_propframe(DATAFRAME_2C):
+    return RTN_PROPFRAME_2C
+# ------------------------------------------------------------------------------------
+# 22:输出每个uid对应的所有prop的平均绝对离差(Mean Absolute Deviation)
+def sub_func_get_mad_propframe(DATAFRAME_2C):
+    return RTN_PROPFRAME_2C
+# ------------------------------------------------------------------------------------
+# 23:输出每个uid对应的所有prop中，出现频率最高的那种prop值
+def sub_func_get_mostfrec_propframe(DATAFRAME_2C):
+    return RTN_PROPFRAME_2C
+# ------------------------------------------------------------------------------------
+# 24:偏度(Skewness(三阶距))统计数据分布偏斜方向和程度的度量
+def sub_func_get_skew_propframe(DATAFRAME_2C):
+    return RTN_PROPFRAME_2C
+# ------------------------------------------------------------------------------------
+# 25:峰度系数(Kurtosis(四阶距))频数分布曲线顶端尖峭或扁平程度的指标
+def sub_func_get_kurt_propframe(DATAFRAME_2C):
+    return RTN_PROPFRAME_2C
+# ------------------------------------------------------------------------------------
+# 26:输出每个uid对应的所有prop进行label_func分类后的标签，标签内含类别根据label_func决定
+#   label_func:{
+#       'tool_func_gate',
+#       'tool_func_kmeans',
+#       '...'
+#     潜在类别模型(Latent Class Model, LCM; Lazarsfeld & Henry, 1968)或潜在类别分析(Latent Class Analysis, LCA)
+#   }
+def sub_func_get_labeling_propframe(DATAFRAME_2C, label_func=None):
+    return RTN_PROPFRAME_2C
+# ============================================================================================
+# 统一输入:DATAFRAME_1C
+#     一个DataFrame，index为默认，一共一列，一列column名为prop（m*1）
+# 统一输出:RTN_LABELEDFRAME_1C
+#     一个DataFrame，index为默认，一共一列，一列column名为统计运算后的label（m*1）
+# ============================================================================================
+# ------------------------------------------------------------------------------------
+# 【工具函数】根据gate_prop数值进行二分类，preserve_direction决定保留方向，被干掉的置NaN(有功能重叠？)
+def tool_func_gate(DATAFRAME_1C, gate_prop, preserve_direction):
+    return RTN_LABELEDFRAME_1C
+# ------------------------------------------------------------------------------------
+# 【工具函数】根据数值进行无监督自分类,K-means算法
+def tool_func_kmeans(DATAFRAME_1C, n_cluster):
+    return RTN_LABELEDFRAME_1C
+
+# 慢慢按sklearn提供的聚类函数进行拓展，讨论意义 http://scikit-learn.org/stable/modules/clustering.html#clustering
+
+
+# ============================================================================================
+# 统一输入:DATAFRAME_NC (N>=2)
+#     一个DataFrame，index为默认，一共N列，column >= 2
+# 统一输出:RTN_DATAFRAME_NC
+#     一个DataFrame，index为默认，一共N列，column >= 1
+# ============================================================================================
+# ------------------------------------------------------------------------------------
+# 【工具函数】!!!这只是个例子，自定义的限制规则函数，这里先实现一个时间限制
+# SPARK: https://www.zhihu.com/question/42341851/answer/207949804
+def rule_restrict_time(prop_tobechecked, start_time, end_time):
+    if prop_tobechecked <= end_time and prop_tobechecked >= start_time:
+        return True
+    else:
+        return False
+# ------------------------------------------------------------------------------------
+# 【工具函数】在 DATAFRAME_NC 表中，根据 tool_func_restrict_rule 函数对
+#  column 列中的 restrict_prop_name 属性进行处理，如果 tool_func_restrict_rule 返回为 True 则保留
+def tool_func_restrict_func(DATAFRAME_NC, restrict_prop_name, restrictrule=None):
+    return RTN_DATAFRAME_NC
+
+# TODO THINK!
+# def restrict_rule_outlier_rejection()
+
+# ============================================================================================
+# 【调用部分】
+#  针对目标sub_func:TASK获取一个DATAFRAME_NC内UID_STR对应的一个PROP_STR的某个特征列
+def single_propunit(DATAFRAME_NC, UID_STR, PROP_STR, TASK):
+    return RTN_PROPFRAME_2C
+#  按照TASK_LIST和PROP_STR_LIST中对应顺序获取DATAFRAME_NC表内多个属性多个运算后的多个特征列
+def multi_propunit(DATAFRAME_NC, UID_STR, PROP_STR_LIST, TASK_LIST):
+    return RTN_DATAFRAME_NC
+
+# ============================================================================================
+# 【IO接口部分】
+# 读取csv文件
+# 输出到csv文件
+# 画图
+
