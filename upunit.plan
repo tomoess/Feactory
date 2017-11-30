@@ -1,64 +1,26 @@
 # http://blog.csdn.net/xuebank111/article/details/52872592
 # http://blog.csdn.net/luckarecs/article/details/71627893
 
-# func:
-#       upunit
-# input:
-#     [str]:[csvfilename]
-#     [str]:[input_uid_name]
-#     [str]:[input_prop_name]
-#     [int]:[func_num]
-#         [1*len_uid_unique]
-        # # 集中趋势的度量:
-        # 1:输出每个uid出现的总次数
-        # 2:输出每个uid对应的所有prop的种类数
-        # 3:输出每个uid对应的多个prop的简单求和
-        # 4:输出每个uid对应的所有prop的平均值
-        # 5:输出每个uid对应的所有prop的中位数
-        # 6:输出每个uid对应的所有prop的众数
-        # 7:输出每个uid对应的所有prop的上四分位数
-        # 8:输出每个uid对应的所有prop的下四分位数
-        # 9:输出每个uid对应的所有prop的累计乘积
-        # 10:输出每个uid对应的所有prop在全局频度排序排名最高的prop值
-        #
-        # # 离散趋势的度量:
-        # 11:输出每个uid对应的所有prop中数值最小的
-        # 12:输出每个uid对应的所有prop中数值最大的
-        # 13:输出每个uid对应的所有prop的极差
-        # 14:输出每个uid对应的所有prop的方差
-        # 15:输出每个uid对应的所有prop的标准差
-        # 16:输出每个uid对应的所有prop的四分卫差
-        # 17:输出每个uid对应的所有prop的离散系数(Coefficient of Variance)
-        # 18:输出每个uid对应的所有prop的一阶差分
-        # 19:输出每个uid对应的所有prop的百分比数变化
-        # 20:输出每个uid对应的所有prop不排序的变化量的标准差
-        # 21:输出每个uid对应的所有prop排序后的变化量的标准差
-        # 22:输出每个uid对应的所有prop的平均绝对离差(Mean Absolute Deviation)
-        # 23:输出每个uid对应的所有prop中，出现频率最高的那种prop值，如果并列就按全部排名靠前的选
-        #
-        # # 偏度与峰度的度量:
-        # 24:偏度(Skewness(三阶距))统计数据分布偏斜方向和程度的度量
-        # 25:峰度系数(Kurtosis(四阶距))频数分布曲线顶端尖峭或扁平程度的指标
-        #
-        # # 分类与截断:
-        # 26:输出每个uid对应的所有prop进行divide_func分类后的标签
-        # 27:gate_func进行二分类后是否保留
-        #   :无监督学习自聚类后的聚类标签
-        #     28:t_SNE
-        #     29:PCA
-        #     30:AP?
-        # [1*len_prop_unique]
-        #     0:输出所有prop及其对应的频度
-#  output_type:[default = 0]
-#     [0: write to a csv file with two content rows, return 1 if done else return 0]
-#     [1: return a dict]
-#     [2: graph it but dont save]
-#  output:
-#     if output_type == 0, return 0 or 1 and write a csv file to disk
-#     elif output_type == 1, return a dict with contents
-#     elif output_type == 2, plot a graph
-
-# 20171128 NEW ADDED!!!
+# # ============================================================================================
+# 统一输入:csvfilename_list
+#     一个list，
+#           len(csvfilename_list) = 1时，propname_list为一个单层list，内存储一个或多个propname
+#           len(csvfilename_list) > 1时，propname_list为一个双层list，每个单元为一个list，内存储一个或多个propname
+# 统一输出:RTN_PROPFRAME_NC N = sum[len(propname_list)]
+#     一个DataFrame，index为默认，一共N列，每列为抽取出的prop
+# ============================================================================================
+# ------------------------------------------------------------------------------------
+# 输入一个含有多个csv文件名的csvfilename_list 和 其对应的 存储所需属性列名的双层list，返回一个RTN_PROPFRAME_NC
+def tool_func_digest_csvs(csvfilename_list, propname_2list):
+    return RTN_PROPFRAME_NC
+# ------------------------------------------------------------------------------------
+# 输入一个含有多个DATAFRAME_NC的DATAFRAME_NC_list 和 其中想要merge的uid的不同的属性名，返回一个合并后不去重的RTN_PROPFRAME_NC
+def tool_func_merge_multi_dataframe(DATAFRAME_NC_list, commonid_list):
+    return RTN_PROPFRAME_NC
+# ------------------------------------------------------------------------------------
+# 全局去重
+def tool_func_duplicate(DATAFRAME_NC):
+    return RTN_PROPFRAME_NC
 
 # ============================================================================================
 # 统一输入:DATAFRAME_2C
@@ -87,7 +49,7 @@ def sub_func_get_avg_propframe(DATAFRAME_2C):
 def sub_func_get_median_propframe(DATAFRAME_2C):
     return RTN_PROPFRAME_2C
 # ------------------------------------------------------------------------------------
-# 6:输出每个uid对应的所有prop的众数
+# 6:输出每个uid对应的所有prop的众数，出现频率最高的
 def sub_func_get_mode_propframe(DATAFRAME_2C):
     return RTN_PROPFRAME_2C
 # ------------------------------------------------------------------------------------
@@ -193,12 +155,11 @@ def tool_func_kmeans(DATAFRAME_1C, n_cluster):
 
 # 慢慢按sklearn提供的聚类函数进行拓展，讨论意义 http://scikit-learn.org/stable/modules/clustering.html#clustering
 
-
 # ============================================================================================
-# 统一输入:DATAFRAME_NC (N>=2)
-#     一个DataFrame，index为默认，一共N列，column >= 2
-# 统一输出:RTN_DATAFRAME_NC
-#     一个DataFrame，index为默认，一共N列，column >= 1
+# 统一输入:DATAFRAME_NC (N=3)
+#     一个DataFrame，index为默认，一共3列，column = 3，一列column名为实际uid（m*n1），一列为实际prop1(m*n2),一列为实际prop2(m*n3)
+# 统一输出:RTN_PROPFRAME_2C
+#     一个DataFrame，index为默认，一共两列，一列column名为实际uid（m*1），一列为统计运算后feature（m*1）
 # ============================================================================================
 # ------------------------------------------------------------------------------------
 # 【工具函数】!!!这只是个例子，自定义的限制规则函数，这里先实现一个时间限制
@@ -226,9 +187,84 @@ def single_propunit(DATAFRAME_NC, UID_STR, PROP_STR, TASK):
 def multi_propunit(DATAFRAME_NC, UID_STR, PROP_STR_LIST, TASK_LIST):
     return RTN_DATAFRAME_NC
 
+
 # ============================================================================================
 # 【IO接口部分】
 # 读取csv文件
 # 输出到csv文件
 # 画图
+
+# =================================施工中======================================================
+# 统一输入:DATAFRAME_NC (N>=2)
+#     一个DataFrame，index为默认，一共N列，column >= 2
+# 统一输出:RTN_DATAFRAME_NC
+#     一个DataFrame，index为默认，一共N列，column >= 1
+# ============================================================================================
+# prop*N
+# keylist,valueproplist
+#
+proplist相加
+proplist相减
+proplist相乘
+proplist相除，正反除
+
+# ============================================================================================
+# func:
+#       upunit
+# input:
+#     [str]:[csvfilename]
+#     [str]:[input_uid_name]
+#     [str]:[input_prop_name]
+#     [int]:[func_num]
+#         [1*len_uid_unique]
+        # # 集中趋势的度量:
+        # 1:输出每个uid出现的总次数
+        # 2:输出每个uid对应的所有prop的种类数
+        # 3:输出每个uid对应的多个prop的简单求和
+        # 4:输出每个uid对应的所有prop的平均值
+        # 5:输出每个uid对应的所有prop的中位数
+        # 6:输出每个uid对应的所有prop的众数
+        # 7:输出每个uid对应的所有prop的上四分位数
+        # 8:输出每个uid对应的所有prop的下四分位数
+        # 9:输出每个uid对应的所有prop的累计乘积
+        # 10:输出每个uid对应的所有prop在全局频度排序排名最高的prop值
+        #
+        # # 离散趋势的度量:
+        # 11:输出每个uid对应的所有prop中数值最小的
+        # 12:输出每个uid对应的所有prop中数值最大的
+        # 13:输出每个uid对应的所有prop的极差
+        # 14:输出每个uid对应的所有prop的方差
+        # 15:输出每个uid对应的所有prop的标准差
+        # 16:输出每个uid对应的所有prop的四分卫差
+        # 17:输出每个uid对应的所有prop的离散系数(Coefficient of Variance)
+        # 18:输出每个uid对应的所有prop的一阶差分
+        # 19:输出每个uid对应的所有prop的百分比数变化
+        # 20:输出每个uid对应的所有prop不排序的变化量的标准差
+        # 21:输出每个uid对应的所有prop排序后的变化量的标准差
+        # 22:输出每个uid对应的所有prop的平均绝对离差(Mean Absolute Deviation)
+        # 23:输出每个uid对应的所有prop中，出现频率最高的那种prop值，如果并列就按全部排名靠前的选
+        #
+        # # 偏度与峰度的度量:
+        # 24:偏度(Skewness(三阶距))统计数据分布偏斜方向和程度的度量
+        # 25:峰度系数(Kurtosis(四阶距))频数分布曲线顶端尖峭或扁平程度的指标
+        #
+        # # 分类与截断:
+        # 26:输出每个uid对应的所有prop进行divide_func分类后的标签
+        # 27:gate_func进行二分类后是否保留
+        #   :无监督学习自聚类后的聚类标签
+        #     28:t_SNE
+        #     29:PCA
+        #     30:AP?
+        # [1*len_prop_unique]
+        #     0:输出所有prop及其对应的频度
+#  output_type:[default = 0]
+#     [0: write to a csv file with two content rows, return 1 if done else return 0]
+#     [1: return a dict]
+#     [2: graph it but dont save]
+#  output:
+#     if output_type == 0, return 0 or 1 and write a csv file to disk
+#     elif output_type == 1, return a dict with contents
+#     elif output_type == 2, plot a graph
+
+
 
